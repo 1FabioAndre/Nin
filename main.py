@@ -21,13 +21,13 @@ import time
 
 sio = socketio.Client()
 
-from AgenteNEnRaya import AgenteTresEnRaya
+from AgenteNEnRaya import AgenteNEnRaya
 from Tablero import Tablero
-from HumanoTresEnRaya import HumanoTresEnRaya
+from HumanoNEnRaya import HumanoNEnRaya
 
 
-luis = AgenteTresEnRaya()
-juan = HumanoTresEnRaya()
+luis = AgenteNEnRaya()
+juan = HumanoNEnRaya()
 
 tablero = Tablero()
 

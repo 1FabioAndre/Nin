@@ -1,9 +1,9 @@
-from AgenteNEnRaya import AgenteTresEnRaya
+from AgenteNEnRaya import AgenteNEnRaya
 
 
-class HumanoTresEnRaya(AgenteTresEnRaya):
+class HumanoNEnRaya(AgenteNEnRaya):
     def __init__(self):
-        AgenteTresEnRaya.__init__(self)
+        AgenteNEnRaya.__init__(self)
 
     def programa(self):
         pass
