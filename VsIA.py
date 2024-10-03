@@ -2,12 +2,10 @@ from Tablero import Tablero
 from AgenteNEnRaya import AgenteNEnRaya
 
 def main():
-    import random
-
     # Configuración del juego
-    h = 3  # Altura del tablero
-    v = 3  # Anchura del tablero
-    k = 3  # Número de piezas en línea para ganar
+    h = 4  # Altura del tablero
+    v = 4  # Anchura del tablero
+    k = 4  # Número de piezas en línea para ganar
 
     # Crear instancias del tablero y del agente
     tablero = Tablero(h, v)
@@ -46,8 +44,13 @@ def main():
         tablero.percibir(agente_ia)
         # Jugada de la IA
         print("Es el turno de la IA:")
-        agente_ia.acciones = random.choice(tablero.juegoActual.movidas)  # IA elige una jugada aleatoria
-        tablero.ejecutar(agente_ia)
+        # Aquí es donde llamamos a la IA para que tome su decisión
+        agente_ia.programa()  # Aquí se calcula la mejor jugada
+        movimiento_ia = agente_ia.acciones  # Suponiendo que este atributo tiene la mejor jugada
+
+        # Actualizar el estado del juego con la jugada de la IA
+        tablero.juegoActual = agente_ia.getResultado(tablero.juegoActual, movimiento_ia)
+        agente_ia.mostrar(tablero.juegoActual)
 
         # Mostrar el tablero después de la jugada de la IA
         if agente_ia.testTerminal(tablero.juegoActual):

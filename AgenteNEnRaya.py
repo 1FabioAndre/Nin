@@ -31,6 +31,7 @@ class AgenteNEnRaya(AgenteJugador):
 
     def testTerminal(self, estado):
         return estado.get_utilidad != 0 or len(estado.movidas) == 0
+    
 
     def mostrar(self, estado):
         tablero = estado.tablero
@@ -61,3 +62,14 @@ class AgenteNEnRaya(AgenteJugador):
             x, y = x - delta_x, y - delta_y
         n -= 1
         return n >= self.k
+    
+ 
+    def programa(self):
+        self.acciones = self.podaAlphaBetaFunEval(self.estado)
+
+
+    '''
+    def programa(self):
+        self.acciones = self.minimax()
+
+    '''

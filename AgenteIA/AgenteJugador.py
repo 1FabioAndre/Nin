@@ -160,9 +160,9 @@ class AgenteJugador(Agente):
                 return self.FunEval(e)
             v = -float('inf')
             for a in self.jugadas(e):
-                v = max(v, valorMin(self.getResultado(e, a), alpha, beta, self.altura - 1))
+                v = max(v, valorMin(self.getResultado(e, a), alpha, beta, altura - 1))
                 if v >= beta:
-                    return v
+                    break  # Se puede salir del bucle si encontramos un valor válido
                 alpha = max(alpha, v)
             return v
 
@@ -171,20 +171,21 @@ class AgenteJugador(Agente):
                 return self.FunEval(e)
             v = float('inf')
             for a in self.jugadas(e):
-                v = min(v, valorMax(self.getResultado(e, a), alpha, beta, self.altura - 1))
+                v = min(v, valorMax(self.getResultado(e, a), alpha, beta, altura - 1))
                 if v <= alpha:
-                    return v
+                    break
                 beta = min(beta, v)
             return v
 
         alpha = -float('inf')
         beta = float('inf')
         mejor_jugada = None
-        profundidad_maxima = 5 
+        profundidad_maxima = 3
 
         for a in self.jugadas(estado):
-            valor = valorMin(self.getResultado(estado, a), alpha, beta, profundidad_maxima - 1)
+            valor = valorMin(self.getResultado(estado, a), alpha, beta, profundidad_maxima)
             if valor > alpha:
                 alpha = valor
                 mejor_jugada = a
+
         return mejor_jugada
