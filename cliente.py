@@ -20,7 +20,7 @@ def disconnect():
 
 try:
     # Conectar a la URL pública que te dio ngrok (usando wss)
-    sio.connect("wss://a4ed-189-28-64-215.ngrok-free.app/")
+    sio.connect("wss://fabb-189-28-64-215.ngrok-free.app/")
 
     # Enviar un mensaje al servidor
     sio.emit('client_message', {'data': 'hola mundo', 'id': 1})
