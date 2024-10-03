@@ -21,6 +21,7 @@ class AgenteJugador(Agente):
         self.juego = None
         self.utilidad = None
         self.altura = 4
+        self.profundidad_maxima = 3
 
     def jugadas(self, estado):
         raise Exception("Error: No se implemento")
@@ -180,10 +181,9 @@ class AgenteJugador(Agente):
         alpha = -float('inf')
         beta = float('inf')
         mejor_jugada = None
-        profundidad_maxima = 3
 
         for a in self.jugadas(estado):
-            valor = valorMin(self.getResultado(estado, a), alpha, beta, profundidad_maxima)
+            valor = valorMin(self.getResultado(estado, a), alpha, beta, self.profundidad_maxima)
             if valor > alpha:
                 alpha = valor
                 mejor_jugada = a

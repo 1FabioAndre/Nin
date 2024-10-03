@@ -26,8 +26,10 @@ def on_message(data):
     if rival.testTerminal(tablero.juegoActual): # Suponiendo que el servidor envía un estado
         print("hola")
         if tablero.juegoActual.get_utilidad != 0:
+            sio.emit('client_message', {'data': str(rival.acciones), 'id': id})
             print("¡Felicidades! Ha ganadado 2.")
         else:
+            sio.emit('client_message', {'data': str(rival.acciones), 'id': id})
             print("¡Es un empate! 2")
         sio.disconnect()  # Desconectarse del servidor
         return
@@ -43,5 +45,5 @@ def disconnect():
     print('Desconectado del servidor')
 
 if __name__ == '__main__':
-    sio.connect('https://fabb-189-28-64-215.ngrok-free.app')  # Cambia esto a la URL de tu servidor
+    sio.connect('https://4d3d-2800-cd0-8006-1100-4d10-48a7-a858-a21e.ngrok-free.app')  # Cambia esto a la URL de tu servidor
     sio.wait()
