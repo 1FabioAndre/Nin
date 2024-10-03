@@ -1,16 +1,33 @@
 import socketio
 import time
-
-sio = socketio.Client()
-
 from AgenteNEnRaya import AgenteNEnRaya
 from Tablero import Tablero
 
-luis = AgenteNEnRaya(6,6,6)  # Tu IA
-tablero = Tablero(6,6)
-tablero.insertar_objeto(luis)
+sio = socketio.Client()
 
-id = 1  # ID único para tu IA
+rival = AgenteNEnRaya(6, 6, 6)  # IA del compañero
+tablero = Tablero(6, 6)
+tablero.insertar_objeto(rival)
+
+id = 1  # ID único para la IA del compañero
+
+# Método para convertir las claves del tablero en strings
+def convertir_tablero_a_str(tablero):
+    return {str(k): v for k, v in tablero.items()}
+
+# Método para enviar jugada y estado del tablero
+def enviar_jugada_estado(jugada, estado):
+    mensaje = {
+        'jugada': jugada,
+        'estado': {
+            'jugador': estado.jugador,
+            'utilidad': estado.get_utilidad,
+            'tablero': convertir_tablero_a_str(estado.tablero),
+            'movidas': estado.movidas
+        },
+        'id': id
+    }
+    sio.emit('client_message', {'data': mensaje})
 
 @sio.event
 def connect():
@@ -19,41 +36,30 @@ def connect():
 
 @sio.on('server_message')
 def on_message(data):
-    print(f"Mensaje del servidor: {data['data']}")
-    
-    # Verificar si es el turno de esta IA
     if data["id"] == id:
-        return  # Si el mensaje es para la misma IA, no procesarlo
+        return
+    print(f"Mensaje del servidor: {data['data']}")
 
-    print(f"Movimiento recibido: {data['data']}")
-    
-    if data["data"] != "Conexion":
-        movida = eval(data["data"])  # Convierte el string en un movimiento válido
-        luis.acciones = movida  # Actualiza la jugada de la IA
-    else:
-        luis.acciones = (None, None)  # Si no hay movimiento, no hacer nada
-
-    
-    if luis.testTerminal(tablero.juegoActual): # Suponiendo que el servidor envía un estado
+    if rival.testTerminal(tablero.juegoActual):
         if tablero.juegoActual.get_utilidad != 0:
-            sio.emit('client_message', {'data': str(luis.acciones), 'id': id})
-            print("¡Felicidades! Has ganado 1.")
+            print("¡Felicidades! Ha ganado.")
         else:
-            sio.emit('client_message', {'data': str(luis.acciones), 'id': id})
-            print("¡Es un empate! 1")
+            print("¡Es un empate!")
         sio.disconnect()  # Desconectarse del servidor
         return
 
-    tablero.avanzar()  # Avanzar en el juego
-    print(f"Movida calculada por la IA: {luis.acciones}")
-    
-    sio.emit('client_message', {'data': str(luis.acciones), 'id': id})
+    if data["data"] != "Conexion":
+        movida = data["data"]["jugada"]  # Asignar directamente sin eval()
+        rival.acciones = movida
+    tablero.avanzar()
 
+    # Enviar jugada y estado del tablero al servidor
+    enviar_jugada_estado(rival.acciones, tablero.juegoActual)
 
 @sio.event
 def disconnect():
     print('Desconectado del servidor')
 
 if __name__ == '__main__':
-    sio.connect('https://4d3d-2800-cd0-8006-1100-4d10-48a7-a858-a21e.ngrok-free.app')  # Cambia esto a la URL de tu servidor
+    sio.connect('https://0eaa-2800-cd0-8006-1100-bc56-7e7-535-95b3.ngrok-free.app')  # Cambia esto a la URL de tu servidor
     sio.wait()

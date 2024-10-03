@@ -1,6 +1,5 @@
 import eventlet
 eventlet.monkey_patch()
-
 from flask import Flask
 from flask_socketio import SocketIO, emit
 
@@ -23,7 +22,13 @@ def handle_connect():
 @socketio.on('client_message')
 def handle_message(data):
     print(f"Mensaje del cliente: {data}")
-    emit('server_message', {'data': data['data'], "id": data["id"]}, broadcast=True)  # Respuesta al cliente
+    # Verificar si 'data' es un diccionario o un simple mensaje de texto
+    if isinstance(data['data'], dict):
+        # Si es un diccionario, manejamos la jugada y el estado
+        emit('server_message', {'data': data['data'], "id": data['data']['id']}, broadcast=True)
+    else:
+        # Si es solo un mensaje de texto como "Conexion"
+        emit('server_message', {'data': data['data'], "id": data['id']}, broadcast=True)
 
 # Evento cuando el cliente se desconecta
 @socketio.on('disconnect')
